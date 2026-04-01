@@ -1,4 +1,4 @@
-# MassHunt
+# MassPacket
 
 **Recon & Network Signal Extraction Tool for Security Testing and Analysis**
 
@@ -6,9 +6,9 @@
 
 ## 🧠 Overview
 
-MassHunt is a lightweight network capture and keyword inspection tool designed to help security practitioners identify weak signals in network traffic.
+MassPacket is a lightweight network capture and keyword inspection tool designed to help security practitioners identify weak signals in network traffic.
 
-Instead of focusing on complex exploitation, MassHunt focuses on:
+Instead of focusing on complex exploitation, MassPacket focuses on:
 
 - Capturing traffic
 - Filtering meaningful patterns
@@ -26,7 +26,7 @@ Modern security is not only about breaking systems — it is about understanding
 - how users behave
 - where sensitive data might unintentionally appear
 
-MassHunt helps answer questions like:
+MassPacket helps answer questions like:
 
 - Are credentials ever exposed in plaintext?
 - Are there identifiable authentication patterns?
@@ -37,7 +37,7 @@ MassHunt helps answer questions like:
 
 ## ⚠️ Important Context
 
-MassHunt is designed for:
+MassPacket is designed for:
 
 - **Authorized security testing**
 - **Lab environments**
@@ -50,7 +50,7 @@ It is **NOT** intended for unauthorized interception of network traffic.
 
 ---
 
-## 🧩 Where MassHunt Fits
+## 🧩 Where MassPacket Fits
 
 In real-world security workflows, there are different roles:
 
@@ -58,7 +58,7 @@ In real-world security workflows, there are different roles:
 - Vulnerability researchers → find flaws
 - Toolsmiths → build systems to extract signals
 
-MassHunt is a **Toolsmith-style utility**.
+MassPacket is a **Toolsmith-style utility**.
 
 It is built for operators who want to:
 
@@ -88,7 +88,7 @@ It is built for operators who want to:
 
 ### 3. Behavioral Signal Analysis
 
-MassHunt can help surface patterns such as:
+MassPacket can help surface patterns such as:
 
 - login activity
 - session/token usage
@@ -123,7 +123,7 @@ This is useful for understanding:
 
 ## 🔑 Keyword System
 
-MassHunt uses keyword-based filtering to extract meaningful data.
+MassPacket uses keyword-based filtering to extract meaningful data.
 
 Default categories include:
 
@@ -154,7 +154,7 @@ A typical authorized testing workflow might look like:
 
 ## 🧠 Philosophy
 
-MassHunt is built on a simple idea:
+MassPacket is built on a simple idea:
 
 > You don’t always need to break systems to learn something valuable.
 
@@ -186,7 +186,7 @@ The author is not responsible for misuse of this tool.
 
 ## 🧭 Final Note
 
-MassHunt may look simple — but its value lies in:
+MassPacket may look simple — but its value lies in:
 
 - how it is used
 - how data is interpreted
