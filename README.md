@@ -1,195 +1,89 @@
-# MassPacket
+# MassPacket (v2.6)
 
-**Recon & Network Signal Extraction Tool for Security Testing and Analysis**
+**Internal Network Recon & Signal Extraction Tool for Security Testing**
 
 ---
 
 ## 🧠 Overview
 
-MassPacket is a lightweight network capture and keyword inspection tool designed to help security practitioners identify weak signals in network traffic.
+MassPacket is a lightweight network capture and keyword inspection utility designed to help security practitioners identify "weak signals" in network traffic. 
 
-Instead of focusing on complex exploitation, MassPacket focuses on:
-
-- Capturing traffic
-- Filtering meaningful patterns
-- Highlighting human and behavioral signals within networks
-
-This makes it especially useful in scenarios where **visibility and pattern recognition** matter more than deep exploitation.
+Instead of focusing on complex exploitation, MassPacket emphasizes **visibility and pattern recognition**. It automates the process of finding human and behavioral signals within a network, making it an essential tool for scenarios where understanding the environment is as important as finding vulnerabilities.
 
 ---
 
-## 🎯 Purpose
+## 🎯 Purpose & Mission
 
-Modern security is not only about breaking systems — it is about understanding:
+Modern security isn't just about breaking into systems; it's about understanding:
+- How systems are utilized in real-world scenarios.
+- How users behave within the infrastructure.
+- Where sensitive data unintentionally leaks.
 
-- how systems are used
-- how users behave
-- where sensitive data might unintentionally appear
-
-MassPacket helps answer questions like:
-
-- Are credentials ever exposed in plaintext?
-- Are there identifiable authentication patterns?
-- What kind of services are being accessed internally?
-- Are there weak or legacy protocols still in use?
+**Mission Context:** Internal reconnaissance after gaining physical or Social Engineering (SE) access.
 
 ---
 
-## ⚠️ Important Context
+## 🛠️ Modes of Operation
 
-MassPacket is designed for:
+Based on the `masshunt.sh` workflow, MassPacket provides two primary operational modes:
 
-- **Authorized security testing**
-- **Lab environments**
-- **Internal network analysis**
-- **Defensive research / blue team visibility**
+### 1. Stealth Capture (Mode 1)
+* **Mechanism:** Passive sniffing to a `.pcap` file using `tcpdump`.
+* **Best For:** Long-term, quiet "Dropbox" style deployments where data is collected for later deep analysis.
+* **Benefit:** Zero-noise terminal output during the capture phase.
 
-It is **NOT** intended for unauthorized interception of network traffic.
+### 2. Live Monitor (Mode 2)
+* **Mechanism:** Real-time keyword monitoring via `ngrep`.
+* **Best For:** Immediate intelligence gathering while physically present on-site.
+* **Benefit:** Instant visibility into credentials, tokens, and session activity as they traverse the wire.
 
-> Always ensure you have proper permission before using this tool on any network.
+---
+
+## 🔑 Keyword Intelligence
+
+MassPacket uses a refined regex system to extract meaningful data from noisy environments. The default configuration targets:
+
+* **Credentials:** `user`, `password`, `login`, `pwd`
+* **Authentication:** `token`, `auth`, `bearer`, `session`, `jwt`
+* **Cloud & API:** `apikey`, `aws_access_key`, `client_secret`
+* **Infrastructure:** `DATABASE_URL`, `mongodb`, `redis`
 
 ---
 
 ## 🧩 Where MassPacket Fits
 
-In real-world security workflows, there are different roles:
-
-- Exploit developers → break systems
-- Vulnerability researchers → find flaws
-- Toolsmiths → build systems to extract signals
-
-MassPacket is a **Toolsmith-style utility**.
+In the security ecosystem, MassPacket is a **Toolsmith-style utility**. It bridges the gap between raw traffic capture and actionable intelligence.
 
 It is built for operators who want to:
-
-- automate observation
-- scale reconnaissance
-- extract meaning from noisy environments
-
----
-
-## 🔍 Use Cases
-
-### 1. Internal Network Visibility
-
-- Identify plaintext traffic (HTTP, legacy protocols)
-- Detect exposed credentials or tokens
-- Observe authentication flows
+* **Automate Observation:** Stop manually digging through thousands of packets.
+* **Scale Reconnaissance:** Identify plaintext protocols (HTTP, legacy services) across various interfaces.
+* **Connect the Dots:** Link system usage patterns to potential security weak points.
 
 ---
 
-### 2. Security Testing & Assessment
+## ⚠️ Important Context & Disclaimer
 
-- Validate whether sensitive data is leaking internally
-- Support red/blue team exercises
-- Assist in recon phases of engagements
+**STRICT RULES: AUTHORIZED USE ONLY.**
 
----
+MassPacket is designed for:
+* Authorized internal network analysis.
+* Defensive research (Blue Team visibility).
+* Educational security lab environments.
 
-### 3. Behavioral Signal Analysis
-
-MassPacket can help surface patterns such as:
-
-- login activity
-- session/token usage
-- repeated service access
-
-This is useful for understanding:
-
-- system usage patterns
-- potential weak points in workflows
-- human interaction with systems
-
----
-
-### 4. Troubleshooting & Debugging
-
-- Debug authentication issues
-- Inspect API or session behavior
-- Analyze unexpected traffic patterns
-
----
-
-## ⚙️ Features
-
-- Capture network traffic (`tcpdump`)
-- Live packet inspection (`ngrep`)
-- Offline keyword-based filtering
-- Custom keyword support (regex)
-- Interface selection (multi-network environments)
-- Lightweight and scriptable
-
----
-
-## 🔑 Keyword System
-
-MassPacket uses keyword-based filtering to extract meaningful data.
-
-Default categories include:
-
-- Credentials → `user`, `password`, `login`
-- Authentication → `token`, `auth`, `session`
-- API access → `apikey`, `jwt`
-
-Users can define their own patterns depending on their use case.
-
----
-
-## 🚀 Example Workflow (High-Level)
-
-A typical authorized testing workflow might look like:
-
-1. Gain **approved access** to a test or internal network  
-2. Identify active devices and services  
-3. Capture network traffic over a period of time  
-4. Analyze captured data for:
-   - exposed credentials
-   - authentication flows
-   - unusual patterns  
-5. Correlate findings with system roles or usage patterns  
-
-> The goal is not interception, but **understanding exposure and improving security posture**.
+> **Note:** Unauthorized interception of network traffic is illegal. Always ensure you have explicit written permission before deploying this tool.
 
 ---
 
 ## 🧠 Philosophy
 
-MassPacket is built on a simple idea:
+MassPacket is built on a simple premise:
+> **"You don’t always need to break systems to learn something valuable."**
 
-> You don’t always need to break systems to learn something valuable.
-
-Sometimes, the most important insights come from:
-
-- observing
-- filtering
-- connecting small signals
+In security, **clarity beats complexity**. Sometimes the most critical insights come from simply observing, filtering, and connecting the small signals that others ignore.
 
 ---
 
 ## 👨‍💻 Author
 
-**JakeLo**  
-🌐 https://jakelo.ai/  
-📧 hello@jakelo.ai  
-
----
-
-## ⚠️ Disclaimer
-
-This tool is provided for **educational and authorized security testing purposes only**.
-
-Unauthorized network interception may violate laws and regulations.
-
-The author is not responsible for misuse of this tool.
-
----
-
-## 🧭 Final Note
-
-MassPacket may look simple — but its value lies in:
-
-- how it is used
-- how data is interpreted
-- how signals are connected
-
-In security, **clarity beats complexity**.
+**JakeLo** 🌐 [https://jakelo.ai/](https://jakelo.ai/)  
+📧 [hello@jakelo.ai](mailto:hello@jakelo.ai)
