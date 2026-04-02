@@ -1,117 +1,93 @@
 #!/bin/bash
 
 # ==============================================================
-# MassPacket - Recon & Social Engineering Support Tool
+# MassPacket v2.6 - Command Guide & Help System
+# Glue code by JakeLo
+# Website: https://jakelo.ai/
+# Email: hello@jakelo.ai
 # ==============================================================
 
-# Description:
-# MassPacket is a lightweight network capture and keyword inspection tool
-# designed for reconnaissance, troubleshooting, and social engineering support.
-#
-# It allows operators to capture network traffic or monitor live packets,
-# then quickly filter for sensitive patterns such as credentials, tokens,
-# authentication data, and user activity indicators.
-#
-# When to use:
-# - Internal network testing / lab environments
-# - Identifying exposed plaintext credentials (HTTP, legacy systems)
-# - Supporting social engineering investigations (e.g. tracking login flows,
-#   credential leaks, or user behavior patterns)
-# - Debugging authentication or session-related issues
-#
-# Why this tool matters:
-# While modern systems use encryption, many internal services, misconfigured
-# environments, or legacy protocols still expose valuable information in plaintext.
-# MassPacket helps surface these weak signals efficiently at scale.
-#
-# Social Engineering Context:
-# This tool is especially useful for operators who focus on human-layer attacks.
-# Instead of exploiting code, it helps identify:
-# - login endpoints
-# - credential patterns
-# - token usage
-# - behavioral traces in network traffic
-#
-# Author:
-# JakeLo
-# https://jakelo.ai/
-# Contact: hello@jakelo.ai
-#
-# Disclaimer:
-# For authorized testing and educational use only.
-# Unauthorized interception of network traffic may be illegal.
-# ==============================================================
+# --- Help Menu Function ---
+show_help() {
+    echo "MassPacket - Internal Network Recon & SE Support Tool"
+    echo ""
+    echo "Usage: sudo ./masshunt.sh [options]"
+    echo ""
+    echo "Options:"
+    echo "  -h        Show this help menu"
+    echo ""
+    echo "Modes:"
+    echo "  Mode 1 (Capture): Passive sniffing to a .pcap file for later analysis."
+    echo "                    Ideal for stealthy 'Dropbox' deployments."
+    echo "  Mode 2 (Live):    Real-time keyword monitoring on the terminal."
+    echo "                    Ideal for immediate intel during physical presence."
+    echo ""
+    echo "Note: Must be run with root privileges."
+    exit 0
+}
 
-GREEN='\033[0;32m'
-RED='\033[0;31m'
-YELLOW='\033[1;33m'
-NC='\033[0m'
+# Check for -h flag
+[[ "$1" == "-h" ]] && show_help
 
-echo -e "${GREEN}=== MassPacket Starting ===${NC}"
+CONFIG_FILE="$HOME/.masspacket_agreed"
 
-# ------------------------------
-# Mode Selection
-# ------------------------------
-echo "Select mode:"
-echo "1) Capture + Analyze (pcap)"
-echo "2) Live capture (real-time)"
+# --- Disclaimer ---
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "############################################################"
+    echo "#                CRITICAL SECURITY & LEGAL                 #"
+    echo "############################################################"
+    echo "MISSION CONTEXT: INTERNAL RECON AFTER SE ACCESS"
+    echo "STRICT RULES: AUTHORIZED ONLY / PASSIVE SNIFFING"
+    echo "############################################################"
+    read -p "Do you have permission and agree? (y/n): " confirm
+    [[ "$confirm" == [yY]* ]] && touch "$CONFIG_FILE" || exit 1
+fi
 
-read -p "Enter choice [1-2]: " mode
+# --- Root Check ---
+[[ $EUID -ne 0 ]] && echo "Error: Must be run as root." && exit 1
 
-# ------------------------------
-# Interface Selection
-# ------------------------------
-echo -e "\n${YELLOW}Available interfaces:${NC}"
+echo "--- MassPacket v2.6 ---"
+
+# --- Mode Selection ---
+echo "1) Stealth Capture (File Output)"
+echo "2) Live Monitor (Real-time)"
+read -p "Choice [1-2]: " mode
+
+# --- Interface Selection ---
+echo ""
 ip -o link show | awk -F': ' '{print NR") "$2}'
-
-read -p "Select interface number: " ifnum
+read -p "Interface number: " ifnum
 iface=$(ip -o link show | awk -F': ' '{print $2}' | sed -n "${ifnum}p")
 
-if [[ -z "$iface" ]]; then
-    echo -e "${RED}Invalid interface selection${NC}"
-    exit 1
-fi
+# --- Default Keywords ---
+keywords="user|username|login|email|pass|password|pwd|token|auth|bearer|session|cookie|jwt|apikey|api_key|secret|grant_type|client_id|client_secret|access_token|refresh_token|aws_access_key|DATABASE_URL|mongodb|redis|ghp_"
 
-echo -e "${GREEN}Using interface: $iface${NC}"
-
-# ------------------------------
-# Keyword Input
-# ------------------------------
-default_keywords="user|username|login|email|pass|password|pwd|token|auth|bearer|session|cookie|jwt|apikey|api_key"
-
-read -p "Enter keywords (regex, press enter for default): " keywords
-keywords=${keywords:-$default_keywords}
-
-echo -e "${GREEN}Using keywords: $keywords${NC}"
-
-# ------------------------------
-# Mode Logic
-# ------------------------------
-
-# Mode 1: Capture + Analyze
+# --- Execution ---
 if [[ "$mode" == "1" ]]; then
-
-    read -p "Enter output file name: " filename
+    read -p "PCAP Filename: " filename
     [[ "$filename" != *.pcap ]] && filename="${filename}.pcap"
+    
+    echo "Capturing on $iface... Press Ctrl+C to finish."
 
-    echo -e "${YELLOW}Starting capture... (Ctrl+C to stop)${NC}"
-    sudo tcpdump -i "$iface" -s 0 -n -w "$filename"
+    # Use trap to capture SIGINT (Ctrl+C) to ensure the script continues to the echo commands after tcpdump stops.
+    trap 'echo ""' SIGINT
+    tcpdump -i "$iface" -nn -s 1500 -w "$filename" 2>/dev/null
+    trap - SIGINT # Reset the trap once finished.
 
-    echo -e "${GREEN}Capture saved to $filename${NC}"
-    echo -e "${YELLOW}Analyzing...${NC}"
+    echo ""
+    echo "############################################################"
+    echo "CAPTURE STOPPED: $filename"
+    echo "############################################################"
+    echo "To analyze this data later at home, use this command:"
+    echo ""
+    echo "ngrep -I $filename -wi -n -W byline \"$keywords\""
+    echo "############################################################"
 
-    ngrep -I "$filename" -wi "$keywords"
-
-# Mode 2: Live capture
 elif [[ "$mode" == "2" ]]; then
-
-    echo -e "${YELLOW}Starting live capture... (Ctrl+C to stop)${NC}"
-
-    sudo ngrep -d "$iface" -wi "$keywords"
-
+    echo "Live Monitor on $iface... (Ctrl+C to Stop)"
+    # -n  Ensure there are no DNS lookup leaks.
+    ngrep -d "$iface" -n -q -wi -W byline "$keywords"
 else
-    echo -e "${RED}Invalid mode selected${NC}"
+    echo "Invalid choice."
     exit 1
 fi
-
-echo -e "${GREEN}=== Done ===${NC}"
