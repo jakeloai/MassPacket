@@ -80,7 +80,7 @@ if [[ "$mode" == "1" ]]; then
     echo "############################################################"
     echo "To analyze this data later at home, use this command:"
     echo ""
-    echo "ngrep -I $filename -wi -n -W byline \"$keywords\""
+    echo "tcpdump -r $filename -A -nn | grep -Ei \"$keywords\""
     echo "############################################################"
 
 elif [[ "$mode" == "2" ]]; then
