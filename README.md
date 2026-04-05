@@ -25,7 +25,7 @@ Modern security isn't just about breaking into systems; it's about understanding
 
 ## 🛠️ Modes of Operation
 
-Based on the `masshunt.sh` workflow, MassPacket provides two primary operational modes:
+Based on the `masspacket.sh` workflow, MassPacket provides two primary operational modes:
 
 ### 1. Stealth Capture (Mode 1)
 * **Mechanism:** Passive sniffing to a `.pcap` file using `tcpdump`.
